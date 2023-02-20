@@ -1,0 +1,16 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+}
+
+.floorItem {
+  text-align: center;
+  padding: 30px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.floorItem:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
