@@ -2,7 +2,7 @@ import styles from "./Header.module.css";
 import LOGO from "../../imgs/logo.png";
 
 interface Props {
-  setCount: any;
+  setCount: (count: number) => void;
 }
 
 const Header = ({ setCount }: Props) => {

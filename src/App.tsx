@@ -23,7 +23,7 @@ function App() {
     }
   }
 
-  const addMap = useCallback(async (parent: any) => {
+  const addMap = useCallback(async (parent: HTMLElement) => {
     const mapContainer = document.createElement("div");
     mapContainer.style.width = "80%";
     mapContainer.style.height = "100%";

@@ -32,10 +32,9 @@
 
 .menuItem {
   margin: 0 50px;
-  color: black;
 }
 
-.menuItem.active {
+.menuItem:first-child {
   color: red;
   text-decoration: underline;
 }
