@@ -3,6 +3,8 @@
 
 ## 설치
 ```
+git cloene https://github.com/dabeeo/dabeeomaps_library_typescript_sample.git
+cd dabeeomaps_library_typescript_sample
 npm i
 ```
 
