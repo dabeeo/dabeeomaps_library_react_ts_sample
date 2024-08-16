@@ -1,37 +1,37 @@
-import { DabeeoMap, DabeeoMapData } from "dabeeomaps";
-import { IDataFloor } from "dabeeomaps/dist/src/model/map/IDataFloor";
 import { useEffect, useState } from "react";
 import styles from "./Map.module.css";
 
 interface Props {
-  map: DabeeoMap | null
-  addMap: (viewer: HTMLElement) => Promise<DabeeoMapData> 
-  removeMap: () => void
-  setLoading: (loading: boolean) => void
+  map: any | null;
+  addMap: (viewer: HTMLElement) => Promise<any>;
+  removeMap: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 const Map = ({ map, addMap, removeMap, setLoading }: Props) => {
-  const [floors, setFloors] = useState<IDataFloor[]>([]);
+  const [floors, setFloors] = useState<any[]>([]);
 
   useEffect(() => {
     const viewer = document.getElementById("viewer");
-    if(viewer) {
-      addMap(viewer).then((e: DabeeoMapData) => {
+    if (viewer) {
+      addMap(viewer).then((e: any) => {
         setFloors(e.dataFloor.getFloors());
       });
     }
 
     return () => {
-      removeMap()
-    }
+      removeMap();
+    };
   }, []);
 
   useEffect(() => {
     if (floors && map) {
       const floorList = document.getElementById("floorList");
-      if(floorList) {
+      if (floorList) {
         floors.forEach((floor) => {
-          const result = floor.name.find((name) => name.lang === "ko");
+          const result = floor.name.find(
+            (name: { lang: string }) => name.lang === "ko"
+          );
           if (result) {
             const item = document.createElement("div");
             item.classList.add("floorItem");
