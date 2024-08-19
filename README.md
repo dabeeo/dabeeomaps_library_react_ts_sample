@@ -24,8 +24,8 @@ npm run dev
 
 ![map_SnapShot](./map_snapshot.gif)
 
-## 사용 api verion 확인
+## 사용 library version 확인
 
 ![apiVer_SnapShot](./apiVersion.png)
 
-- 개발자 모드의 console.warn으로 version 명시
+- 개발자 모드의 console.warn 찍힌 version 확인 가능
