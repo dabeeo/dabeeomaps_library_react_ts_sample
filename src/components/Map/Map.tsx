@@ -1,57 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import useLoadingStore from "../../stores/loading";
+import Loading from "../Loading/Loading";
+import FloorList from "./FloorList";
 import styles from "./Map.module.css";
+import MapDraw from "./MapDraw";
 
-interface Props {
-  map: any | null;
-  addMap: (viewer: HTMLElement) => Promise<any>;
-  removeMap: () => void;
-  setLoading: (loading: boolean) => void;
-}
+const Map = () => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const loadingStore = useLoadingStore();
 
-const Map = ({ map, addMap, removeMap, setLoading }: Props) => {
-  const [floors, setFloors] = useState<any[]>([]);
+  const showAndAppendMap = async () => {
+    if (mapRef.current) {
+      const map = mapRef.current;
+      await new MapDraw().showMap(map);
+
+      loadingStore.setLoadingMap(false);
+    }
+  };
 
   useEffect(() => {
-    const viewer = document.getElementById("viewer");
-    if (viewer) {
-      addMap(viewer).then((e: any) => {
-        setFloors(e.dataFloor.getFloors());
-      });
+    if (loadingStore.hasMapData) {
+      showAndAppendMap();
     }
+  }, [loadingStore.hasMapData]);
 
+  useEffect(() => {
     return () => {
-      removeMap();
+      MapDraw.cleanup();
+      loadingStore.setLoadingMap(true);
     };
   }, []);
 
-  useEffect(() => {
-    if (floors && map) {
-      const floorList = document.getElementById("floorList");
-      if (floorList) {
-        floors.forEach((floor) => {
-          const result = floor.name.find(
-            (name: { lang: string }) => name.lang === "ko"
-          );
-          if (result) {
-            const item = document.createElement("div");
-            item.classList.add("floorItem");
-            item.innerText = result.text;
-
-            item.addEventListener("click", async () => {
-              setLoading(true);
-              await map.context.changeFloor(floor.id);
-              setLoading(false);
-            });
-            floorList.appendChild(item);
-          }
-        });
-      }
-    }
-  }, [map, floors, setLoading]);
-
   return (
-    <div className={styles.map} id="viewer">
-      <div className={styles.floorList} id="floorList"></div>
+    <div className={styles.mapContainer}>
+      {(loadingStore.isFloorChanging || loadingStore.isLoadingMap) && (
+        <Loading />
+      )}
+      <FloorList />
+      <div className={styles.map} ref={mapRef}></div>
     </div>
   );
 };

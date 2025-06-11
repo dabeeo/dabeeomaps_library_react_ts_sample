@@ -1,70 +1,55 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./App.css";
-import Loading from "./components/Loading/Loading";
 import Header from "./components/Header/Header";
 import Map from "./components/Map/Map";
 import Main from "./components/Main/Main";
-
-const dabeeoMaps = new (window as any).dabeeo.Maps(true); // 1번만 호출
-
-// 동일 데이터에 대해 1번만 호출
-const mapData = await dabeeoMaps.getMapData({
-  clientId: "byQdkBiK4_qbW3lNRooB_Q",
-  clientSecret: "2e77b65e659705891c0ca2e66d74e285",
-});
+import MapDraw from "./components/Map/MapDraw";
+import useLoadingStore from "./stores/loading";
+import useFloorStore from "./stores/floor";
 
 function App() {
-  const [map, setMap] = useState<any | null>(null);
+  const [loadMapScript, setLoadMapScript] = useState<boolean>(false);
+  const loadingStore = useLoadingStore();
+  const floorStore = useFloorStore();
   const [count, setCount] = useState(1);
-  const [loading, setLoading] = useState(false);
 
-  const removeMap = () => {
-    if (map) {
-      map.context.cleanup();
-      const mapContainer = document.querySelector(".map");
-      if (mapContainer?.parentNode) {
-        mapContainer.parentNode.removeChild(mapContainer);
+  const getMapData = useCallback(async () => {
+    try {
+      const mapData = await MapDraw.getInstance().getMapData({
+        clientId: "byQdkBiK4_qbW3lNRooB_Q",
+        clientSecret: "2e77b65e659705891c0ca2e66d74e285",
+      });
+
+      // mapData가 없을 경우
+      if (!mapData) {
+        return undefined;
       }
-      setMap(null);
+
+      MapDraw.mapData = mapData;
+      floorStore.setFloors(mapData.dataFloor.getFloors());
+      loadingStore.setHasMapData(true);
+    } catch (e) {
+      console.error("dabeeoMaps getMapData error!", e);
     }
-  };
-
-  const addMap = useCallback(async (parent: HTMLElement) => {
-    const mapContainer = document.createElement("div");
-    mapContainer.style.width = "80%";
-    mapContainer.style.height = "100%";
-    mapContainer.classList.add("map");
-    parent.appendChild(mapContainer);
-
-    setLoading(true);
-
-    const mapOption = {};
-    const dabeeoMap = await dabeeoMaps.showMap(
-      mapContainer,
-      mapOption,
-      mapData
-    );
-    console.log("showMap");
-    setMap(dabeeoMap);
-    setLoading(false);
-
-    return mapData;
   }, []);
+
+  // 1. dabeeomaps map script 로딩 완료
+  useEffect(() => {
+    setLoadMapScript(true);
+    MapDraw.getInstance();
+  }, []);
+
+  // 2. dabeeo map data 조회
+  useEffect(() => {
+    if (loadMapScript) {
+      getMapData();
+    }
+  }, [loadMapScript]);
 
   return (
     <div className="App">
-      {loading && <Loading />}
       <Header setCount={setCount} />
-      {count === 2 ? (
-        <Map
-          map={map}
-          addMap={addMap}
-          removeMap={removeMap}
-          setLoading={setLoading}
-        />
-      ) : (
-        <Main count={count} />
-      )}
+      {count === 2 ? <Map /> : <Main count={count} />}
     </div>
   );
 }
