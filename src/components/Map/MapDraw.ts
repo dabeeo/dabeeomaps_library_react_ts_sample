@@ -1,3 +1,4 @@
+import { Maps } from "dabeeomaps";
 import { isEmpty } from "lodash";
 
 declare global {
@@ -23,7 +24,7 @@ class MapDraw {
 
   public static getInstance() {
     if (isEmpty(this.dabeeoMaps)) {
-      this.dabeeoMaps = new window.dabeeo.Maps() as any;
+      this.dabeeoMaps = new Maps();
     }
 
     return this.dabeeoMaps;
