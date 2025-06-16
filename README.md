@@ -3,12 +3,14 @@
 이 프로젝트는 dabeoomaps 4.0를 리액트, 타입스크립트 환경에서 사용한 샘플 프로젝트입니다.
 
 ## 설치
-
+### npm으로 사용시  
 ```
-git clone https://github.com/dabeeo/dabeeomaps_library_typescript_sample.git
-cd dabeeomaps_library_typescript_sample
+git clone https://github.com/dabeeo/dabeeomaps_library_react_ts_sample.git
+cd dabeeomaps_library_react_ts_sample
 npm i
 ```
+
+### cdn으로 사용시 
 
 ## 시작하기
 
