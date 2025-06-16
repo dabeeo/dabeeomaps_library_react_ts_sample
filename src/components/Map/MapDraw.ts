@@ -30,7 +30,7 @@ class MapDraw {
     return this.dabeeoMaps;
   }
 
-  private mapOption = {};
+  private mapOption = { camera: "3D" };
 
   async showMap(mapContainer: HTMLDivElement) {
     if (MapDraw.map) {
